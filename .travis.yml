@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - "6"
+branches:
+  only:
+  - dev
+before_install:
+- openssl aes-256-cbc -K $encrypted_68347000ddf6_key -iv $encrypted_68347000ddf6_iv
+  -in .travis/id_rsa_weeklyalgo.enc -out ~/.ssh/id_rsa -d
+- export TZ='Asia/Shanghai'
+- npm install -g hexo
+# 设置id_rsa文件权限
+- chmod 600 ~/.ssh/id_rsa
+# 添加ssh密钥
+- eval $(ssh-agent)
+- ssh-add ~/.ssh/id_rsa
+# 添加ssh配置文件
+- cp .travis/ssh_config  ~/.ssh/config
+#  设置github账户信息
+- git config --global user.name "weeklyalgo"
+- git config --global user.email weeklyalgo@163.com
+# 安装依赖组建
+install:
+- npm install
+script:
+- hexo clean && hexo g 
+- hexo d
