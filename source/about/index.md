@@ -7,7 +7,3 @@ sharing: true
 footer: true
 ---
 ## WeeklyAlgo
-## c技术群算法博客
-## 用于交流分享知识
-
-## 163:weeklyalgo
