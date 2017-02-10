@@ -1,6 +1,6 @@
 ---
 title: Hello Weeklyalgo
-date: 2017-02-05 22:38:37
+date:
 categories: weeklyalgo
 ---
 欢迎来到[Weeklyalgo](#)! 
