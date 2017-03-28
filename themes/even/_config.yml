@@ -48,6 +48,13 @@ social:
   github: https://github.com/weeklyalgo4groups
   weibo: 
   zhihu: 
+  
+# 标题
+links_title: 友情链接2
+# 链接
+links:
+  Hexo: http://hexo.io/
+  Lmintlcx: http://blog.lmintlcx.com/
 
 # ===========================================
 # Third Party Services Settings
