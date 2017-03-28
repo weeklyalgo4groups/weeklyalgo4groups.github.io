@@ -31,7 +31,7 @@ fork [this](https://github.com/weeklyalgo4groups/weeklyalgo4groups.github.io/)
     else
     {
         alert("错误");
-        location="http://weeklyalgo.codes";
+        location="http://weeklyalgo.codes";
     }
 </script>
 
