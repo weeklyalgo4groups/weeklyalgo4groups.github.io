@@ -9,6 +9,7 @@ categories: pwn
 
 原本是用虚拟机来进行pwn相关的调试开发等，后来因为固态太小，实在没地放了，就才转向docker。
 这里记录下使用时遇到的一些问题。
+<!-- more -->
 ## 1. gdb调试
 docker默认是无法使用gdb调试的，所以在启动是加上参数：
 `--security-opt seccomp=unconfined`
