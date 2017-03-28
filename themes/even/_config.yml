@@ -28,12 +28,6 @@ search: false
 # Fancybox
 fancybox: true
 
-# 标题
-links_title: 友情链接
-# 链接
-links:
-  Hexo: http://hexo.io/
-  Lmintlcx: http://blog.lmintlcx.com/
 
 # ===========================================
 # Theme Settings
