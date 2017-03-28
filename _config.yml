@@ -17,6 +17,13 @@ root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
+# 标题
+links_title: 友情链接
+# 链接
+links:
+  Hexo: http://hexo.io/
+  Lmintlcx: http://blog.lmintlcx.com/
+
 # Directory
 source_dir: source
 public_dir: public
