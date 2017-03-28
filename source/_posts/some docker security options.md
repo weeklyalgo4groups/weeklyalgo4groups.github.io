@@ -2,6 +2,7 @@
 title: some docker security options
 date: 2017-03-6 16:20:37
 categories: pwn
+tags: docker, pwn, security-opt
 ---
 
 # 在搭建pwn环境时遇到的一些问题
