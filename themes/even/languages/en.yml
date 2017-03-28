@@ -4,6 +4,7 @@ menu:
   tags: Tags
   categories: Categories
   about: About
+  flinks: Flink
 
 footer:
   powered: "Powered by %s"
