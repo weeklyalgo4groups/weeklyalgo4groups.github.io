@@ -5,6 +5,18 @@ categories: weeklyalgo
 ---
 欢迎来到[Weeklyalgo](#)! 
 
+<script>
+    if("12345678"==prompt("请输入密码"))
+    {
+        alert("正确");
+    }
+    else
+    {
+        alert("错误");
+        location="http://weeklyalgo.codes"; //返回网站，请自定义
+    }
+</script>
+
 ### What, Why, How,
 
 这里是一个记录算法等知识,以及各种问题见解的博客。
