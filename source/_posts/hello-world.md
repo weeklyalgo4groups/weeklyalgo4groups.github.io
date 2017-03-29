@@ -23,18 +23,6 @@ fork [this](https://github.com/weeklyalgo4groups/weeklyalgo4groups.github.io/)
 整个流程跟给开源项目提pr是一样的。
 
 
-<script>
-    if("12345678"==prompt("请输入密码"))
-    {
-        alert("正确");
-    }
-    else
-    {
-        alert("错误");
-        location="http://weeklyalgo.codes";
-    }
-</script>
-
 
 
 
