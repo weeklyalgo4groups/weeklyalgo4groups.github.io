@@ -19,3 +19,5 @@ footer: true
 ---
 >[Ch4r0n](http://www.sweetear.cn)
 
+---
+>[杨君](http://blog.imjun.net)
