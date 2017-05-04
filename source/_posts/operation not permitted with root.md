@@ -1,5 +1,5 @@
 ---
-title: "operation not permitted" with root
+title: operation not permitted with root
 date: 2017-05-04 22:28:37
 categories: Mac
 ---
