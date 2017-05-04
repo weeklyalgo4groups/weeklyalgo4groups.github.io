@@ -20,12 +20,9 @@ categories: iOS
 
 ## 1. MachO Header
 
+先是头部
 
 ```
-/*
- * The 32-bit mach header appears at the very beginning of the object file for
- * 32-bit architectures.
-*/
 struct mach_header {
     uint32_t magic; /* mach magic number identifier */
     cpu_type_t cputype; /* cpu specifier */
