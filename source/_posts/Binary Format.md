@@ -20,8 +20,25 @@ categories: iOS
 
 ## 1. MachO Header
 
-```/* * The 32-bit mach header appears at the very beginning of the object file for * 32-bit architectures.*/struct mach_header {    uint32_t magic; /* mach magic number identifier */    cpu_type_t cputype; /* cpu specifier */    cpu_subtype_t cpusubtype; /* machine specifier */    uint32_t filetype; /* type of file */    uint32_t ncmds; /* number of load commands */    uint32_t sizeofcmds; /* the size of all the load commands */    uint32_t flags; /* flags */
-    uint32_t reserved; /* 仅限64位MachO，预留字段，默认0 */};/* Constant for the magic field of the mach_header (32-bit architectures) */#define MH_MAGIC 0xfeedface /* the mach magic number */#define MH_CIGAM 0xcefaedfe /* NXSwapInt(MH_MAGIC) */
+
+```
+/*
+ * The 32-bit mach header appears at the very beginning of the object file for
+ * 32-bit architectures.
+*/
+struct mach_header {
+    uint32_t magic; /* mach magic number identifier */
+    cpu_type_t cputype; /* cpu specifier */
+    cpu_subtype_t cpusubtype; /* machine specifier */
+    uint32_t filetype; /* type of file */
+    uint32_t ncmds; /* number of load commands */
+    uint32_t sizeofcmds; /* the size of all the load commands */
+    uint32_t flags; /* flags */
+    uint32_t reserved; /* 仅限64位MachO，预留字段，默认0 */
+};
+/* Constant for the magic field of the mach_header (32-bit architectures) */
+#define MH_MAGIC 0xfeedface /* the mach magic number */
+#define MH_CIGAM 0xcefaedfe /* NXSwapInt(MH_MAGIC) */
 ```
 
 这里列出了32位MachO头(64位为mach_header_64, 多了一个预留字段uint32_t reserved;`目前未使用`)
@@ -58,7 +75,8 @@ mach_header:
 ## 2. Load Commands
 通用主体结构在下面列出，但详细的LC存在不同的结构:
 
-```struct load_command {
+```
+struct load_command {
 	uint32_t cmd;		/* type of load command */
 	uint32_t cmdsize;	/* total size of command in bytes */
 };
@@ -212,9 +230,11 @@ section attributes:
 | ... | ... |
 
 ```
-`S_ATTR_PURE_INSTRUCTIONS`: This section contains only executable machine instructions. The standard tools set this flag for the sections __TEXT,__text, __TEXT,__symbol_stub, and __TEXT,__picsymbol_stub.`S_ATTR_SOME_INSTRUCTIONS`: This section contains executable machine instructions.
+`S_ATTR_PURE_INSTRUCTIONS`: This section contains only executable machine instructions. The standard tools set this flag for the sections __TEXT,__text, __TEXT,__symbol_stub, and __TEXT,__picsymbol_stub.
+`S_ATTR_SOME_INSTRUCTIONS`: This section contains executable machine instructions.
 ...
-`S_REGULAR`: This section has no particular type. The standard tools create a __TEXT,__text section of this type.`S_ZEROFILL`: Zero-fill-on-demand section—when this section is first read from or written to, each page within is automatically filled with bytes containing zero. __DATA.__bss
+`S_REGULAR`: This section has no particular type. The standard tools create a __TEXT,__text section of this type.
+`S_ZEROFILL`: Zero-fill-on-demand section—when this section is first read from or written to, each page within is automatically filled with bytes containing zero. __DATA.__bss
 `S_CSTRING_LITERALS`: This section contains only constant C strings. The standard tools create a __TEXT,__cstring section of this type.
 ```
 
@@ -301,10 +321,21 @@ struct entry_point_command {
 ## Fat Header:
 
 ```
-#define FAT_MAGIC 0xcafebabe#define FAT_CIGAM 0xbebafeca /* NXSwapLong(FAT_MAGIC) */
-struct fat_header {    uint32_t magic;    uint32_t nfat_arch;};struct fat_arch {    cpu_type_t cputype; /* cpu specifier (int) */    cpu_subtype_t cpusubtype; /* machine specifier (int) */    uint32_t offset; /* file offset to this object file */
+#define FAT_MAGIC 0xcafebabe
+#define FAT_CIGAM 0xbebafeca /* NXSwapLong(FAT_MAGIC) */
+
+struct fat_header {
+    uint32_t magic;
+    uint32_t nfat_arch;
+};
+
+struct fat_arch {
+    cpu_type_t cputype; /* cpu specifier (int) */
+    cpu_subtype_t cpusubtype; /* machine specifier (int) */
+    uint32_t offset; /* file offset to this object file */
     uint32_t size; /* size of this object file */
-    uint32_t align; /* alignment as a power of 2 */ };
+    uint32_t align; /* alignment as a power of 2 */
+ };
 ```
 fat_header:
 >1.magic描述文件类型, 例如`Fat File[0xcafebabe]`
