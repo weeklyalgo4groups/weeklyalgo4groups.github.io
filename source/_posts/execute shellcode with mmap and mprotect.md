@@ -6,6 +6,7 @@ categories: pwn
 
 # 利用mmap和mprotect来任意执行shellcode
 此前一直只了解了下原理，没有实际执行过，结果遇到题目后花时间去查它们的详细参数，因此这里记录总结下。
+
 <!-- more -->
 > - by hook
 
