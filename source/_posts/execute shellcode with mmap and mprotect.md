@@ -29,7 +29,7 @@ mmap()函数把指定或随机分配的地址内存，以prot权限映射到自s
 <2>. 用mmap获取一段rwx权限的内存，映射到指定地址处，然后将shellcode写入映射好的内容存里，接着跳入布置好的shellcode中。
 
 ## 实例
-[ssctf-2017 pwn250](https://github.com/gloxec/record/ssctf_2017/pwn250)
+[ssctf-2017 pwn250](https://github.com/gloxec/record/blob/master/ssctf_2017/pwn250)
 就拿这这个来练习下mprotect&mmap:
 
 mprotect:
