@@ -12,10 +12,11 @@ before_install:
 # 设置id_rsa文件权限
 - chmod 600 ~/.ssh/id_rsa
 # 添加ssh密钥
-- eval $(ssh-agent)
+- eval $(ssh-agent -s)
 - ssh-add ~/.ssh/id_rsa
 # 添加ssh配置文件
 - cp .travis/ssh_config  ~/.ssh/config
+- ssh-agent -k
 #  设置github账户信息
 - git config --global user.name "weeklyalgo"
 - git config --global user.email weeklyalgo@163.com
