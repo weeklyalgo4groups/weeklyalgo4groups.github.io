@@ -1,6 +1,6 @@
 ---
 title: Reverse Engineer a stripped binary
-date: 2017-07-17 23:25:37
+date: 2017-07-16 23:25:37
 categories: pwn
 ---
 
