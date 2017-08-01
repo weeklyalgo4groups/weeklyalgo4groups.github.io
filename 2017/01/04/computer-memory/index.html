@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="计算机内存结构和计算存储管理"/>
+
+
+
+
+  <meta name="keywords" content="data struct," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0" />
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/01/04/computer-memory/"/>
+
+
+<meta name="description" content="内存单元和地址">
+<meta name="keywords" content="data struct">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机内存结构和计算存储管理">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/01/04/computer-memory/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="内存单元和地址">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-08-01T15:07:40.969Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机内存结构和计算存储管理">
+<meta name="twitter:description" content="内存单元和地址">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  
+
+
+
+    <title> 计算机内存结构和计算存储管理 · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          计算机内存结构和计算存储管理
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年1月4日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存单元和地址"><span class="toc-text">内存单元和地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis-SDS"><span class="toc-text">redis SDS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象的存储与管理"><span class="toc-text">对象的存储与管理</span></a></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <h2 id="内存单元和地址"><a href="#内存单元和地址" class="headerlink" title="内存单元和地址"></a>内存单元和地址</h2><a id="more"></a>
+<p>内存的基本结构是线性排列的一批存储单元。每个单元在目前的常见的内存条中基本是一个字节。<br>大家都知道一个字节8位，能表示2^8范围的数。对于超过这个范围的，一个字节是肯定不够用的。<br>对于常见的数据类型，比如整数、小数。都需要不只一个单元。</p>
+<p>每个内存单元都有一个唯一编号的，对内存的访问都是通过内存地址，所谓的多少位计算机，本质上<br>指的的一次能访问的位数，位数除以8就是一次能访问的单元数。</p>
+<p>内存单元访问基于地址，可以直接找那个地址所对应的内存单元，所以从时间复杂度来说，访问任何单元都是O(1)的时间复杂度。基于这个思想来考虑一个问题，如何获取一个序列的长度，例如单链表，我们如何知道链表的长度，最简单的想法就是直接找到一个内存，不一定只有一个单元，但是能通过地址直接访问那个地址，获取整个序列的长度。就能实现最低的时间复杂度。例如:redis SDS</p>
+<h2 id="redis-SDS"><a href="#redis-SDS" class="headerlink" title="redis SDS"></a>redis SDS</h2><p>redis 的SDS字符对象在的底层实现就体现了上节说的数据结构思维，sdshdr结构体提供了个len标明字符串长度。</p>
+<h2 id="对象的存储与管理"><a href="#对象的存储与管理" class="headerlink" title="对象的存储与管理"></a>对象的存储与管理</h2><p>这里的对象不只是OOP里的对象，他表示的是一个存在，或者说聚合体。拥有存储管理的语言,数据结构的良好组织能从根本上提高效率。</p>
+<p><a href="http://pyclear.me/2017/01/04/memory-struct-and-manage/" target="_blank" rel="external">原文</a></p>
+
+      
+    </div>
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/data-struct/">data struct</a>
+          
+        </div>
+
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/05/Using GDB for Vulnerability Developement/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Using GDB/LLDB for Vulnerability Developement</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/04/computer-memory/"
+           data-title="计算机内存结构和计算存储管理" data-url="http://weeklyalgo.codes/2017/01/04/computer-memory/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+    
+    2017
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>

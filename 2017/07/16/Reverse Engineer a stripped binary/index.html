@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Reverse Engineer a stripped binary"/>
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0" />
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/07/16/Reverse Engineer a stripped binary/"/>
+
+
+<meta name="description" content="逆向分析静态编译并裁减了符号表的二进制文件做题时遇到了这类文件，记录记录恢复函数名过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reverse Engineer a stripped binary">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/07/16/Reverse Engineer a stripped binary/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="逆向分析静态编译并裁减了符号表的二进制文件做题时遇到了这类文件，记录记录恢复函数名过程。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/1.png">
+<meta property="og:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/2.png">
+<meta property="og:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/3.png">
+<meta property="og:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/4.png">
+<meta property="og:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/5.png">
+<meta property="og:updated_time" content="2017-08-01T15:07:40.969Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Reverse Engineer a stripped binary">
+<meta name="twitter:description" content="逆向分析静态编译并裁减了符号表的二进制文件做题时遇到了这类文件，记录记录恢复函数名过程。">
+<meta name="twitter:image" content="http://weeklyalgo.codes/images/Reverse%20Engineer%20a%20stripped%20binary/1.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  
+
+
+
+    <title> Reverse Engineer a stripped binary · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Reverse Engineer a stripped binary
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年7月16日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#逆向分析静态编译并裁减了符号表的二进制文件"><span class="toc-text">逆向分析静态编译并裁减了符号表的二进制文件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#原程序结构"><span class="toc-text">原程序结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用函数签名恢复函数名称"><span class="toc-text">利用函数签名恢复函数名称</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lscan"><span class="toc-text">. lscan</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Rizzo来自己生成签名库"><span class="toc-text">. 使用Rizzo来自己生成签名库</span></a></li></ol></li></ol></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <h1 id="逆向分析静态编译并裁减了符号表的二进制文件"><a href="#逆向分析静态编译并裁减了符号表的二进制文件" class="headerlink" title="逆向分析静态编译并裁减了符号表的二进制文件"></a>逆向分析静态编译并裁减了符号表的二进制文件</h1><p>做题时遇到了这类文件，记录记录恢复函数名过程。<br><a id="more"></a></p>
+<blockquote>
+<ul>
+<li>by hook</li>
+</ul>
+</blockquote>
+<h2 id="原程序结构"><a href="#原程序结构" class="headerlink" title="原程序结构"></a>原程序结构</h2><p>分析原程序时可以看到一堆未识别的函数，并且未调用任何动态库。<br><img src="/images/Reverse Engineer a stripped binary/1.png" alt=""></p>
+<h2 id="利用函数签名恢复函数名称"><a href="#利用函数签名恢复函数名称" class="headerlink" title="利用函数签名恢复函数名称"></a>利用函数签名恢复函数名称</h2><h3 id="lscan"><a href="#lscan" class="headerlink" title=". lscan"></a><1>. lscan</1></h3><p>使用lscan来比对引入函数量的动态库，这里可以看到libc-2.23.sig这个签名库包含了11.29%的信息<br><img src="/images/Reverse Engineer a stripped binary/2.png" alt=""><br>所以这里把这个签名库拷贝到IDA的sig文件夹下，使用File-&gt;Load File-&gt;FLIRT signature file功能，加载这个签名库，来识别出一些静态编译在程序中的函数。<br><img src="/images/Reverse Engineer a stripped binary/3.png" alt=""><br>虽然不多，但还是成功识别出一些函数了。<br><img src="/images/Reverse Engineer a stripped binary/4.png" alt=""></p>
+<h3 id="使用Rizzo来自己生成签名库"><a href="#使用Rizzo来自己生成签名库" class="headerlink" title=". 使用Rizzo来自己生成签名库"></a><2>. 使用Rizzo来自己生成签名库</2></h3><p>当确定静态编译使用的版本时，就可以利用这个来很方便的导出库签名，并加载到要分析的程序中去。<br>这里我使用了本地libc做了实验，虽然版本不对，但是识别出了更多的函数。<br><img src="/images/Reverse Engineer a stripped binary/5.png" alt=""></p>
+
+      
+    </div>
+
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/16/Reverse Engineer a stripped binary/"
+           data-title="Reverse Engineer a stripped binary" data-url="http://weeklyalgo.codes/2017/07/16/Reverse Engineer a stripped binary/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+    
+    2017
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>

