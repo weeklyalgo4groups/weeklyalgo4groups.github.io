@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="operation not permitted with root"/>
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0" />
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/05/04/operation not permitted with root/"/>
+
+
+<meta name="description" content="operation not permitted在Mac下root权限操作仍旧得到”operation not permitted”提示 重启按住Command+R进入恢复模式csrutil disable再重启进入系统即可解决。详细原因是…   by hook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="operation not permitted with root">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/05/04/operation not permitted with root/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="operation not permitted在Mac下root权限操作仍旧得到”operation not permitted”提示 重启按住Command+R进入恢复模式csrutil disable再重启进入系统即可解决。详细原因是…   by hook">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-08-03T15:49:08.107Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="operation not permitted with root">
+<meta name="twitter:description" content="operation not permitted在Mac下root权限操作仍旧得到”operation not permitted”提示 重启按住Command+R进入恢复模式csrutil disable再重启进入系统即可解决。详细原因是…   by hook">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  
+
+
+
+    <title> operation not permitted with root · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          operation not permitted with root
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年5月4日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#operation-not-permitted"><span class="toc-text">operation not permitted</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SIP"><span class="toc-text">SIP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-更改目录"><span class="toc-text">1.更改目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-关闭SIP"><span class="toc-text">2.关闭SIP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#csrutil用法"><span class="toc-text">csrutil用法</span></a></li></ol></li></ol></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <h1 id="operation-not-permitted"><a href="#operation-not-permitted" class="headerlink" title="operation not permitted"></a>operation not permitted</h1><p>在Mac下root权限操作仍旧得到”operation not permitted”提示</p>
+<p>重启按住<code>Command+R</code>进入恢复模式<br><code>csrutil disable</code><br>再重启进入系统即可解决。<br>详细原因是…</p>
+<blockquote>
+<ul>
+<li>by hook</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h1 id="SIP"><a href="#SIP" class="headerlink" title="SIP"></a>SIP</h1><p>在Mac OS X 11以后，就算是root用户，去操作一些系统目录，也会收到”operation not permitted”提示。<br>例如</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s xxxx <span class="regexp">/usr/</span>xxx</div></pre></td></tr></table></figure>
+<p>等等敏感命令</p>
+<p>这是因为<code>El Capitan</code>引入了<code>Rootless</code>机制<br>这里有两种解决办法：</p>
+<h2 id="1-更改目录"><a href="#1-更改目录" class="headerlink" title="1.更改目录"></a>1.更改目录</h2><p>改变操作目录，比如把链接到<code>/usr/bin</code>的操作改为<code>/usr/local/bin</code>这种同效果操作。</p>
+<h2 id="2-关闭SIP"><a href="#2-关闭SIP" class="headerlink" title="2.关闭SIP"></a>2.关闭SIP</h2><p>看到别人说Rootless机制将成为对抗恶意程序的最后防线，所以这种办法自己选择吧。</p>
+<p>重启按住<code>Commadn+R</code>进入恢复模式<br>运行<code>csrutil disable</code>关闭SIP</p>
+<p>要恢复的话<br><code>csrutil enable</code></p>
+<h3 id="csrutil用法"><a href="#csrutil用法" class="headerlink" title="csrutil用法"></a>csrutil用法</h3><p>csrutil命令参数格式：</p>
+<p>csrutil enable [–without kext | fs | debug | dtrace | nvram][–no-internal]</p>
+<p>禁用：<code>csrutil disable</code></p>
+<blockquote>
+<p>（等同于csrutil enable –without kext –without fs –without debug –without dtrace –without nvram）</p>
+</blockquote>
+<p>其中各个开关，意义如下：</p>
+<blockquote>
+<p>B0: [kext] 允许加载不受信任的kext（与已被废除的kext-dev-mode=1等效）<br>B1: [fs] 解锁文件系统限制<br>B2: [debug] 允许task_for_pid()调用<br>B3: [n/a] 允许内核调试 （官方的csrutil工具无法设置此位）<br>B4: [internal] Apple内部保留位（csrutil默认会设置此位，实际不会起作用。设置与否均可）<br>B5: [dtrace] 解锁dtrace限制<br>B6: [nvram] 解锁NVRAM限制<br>B7: [n/a] 允许设备配置（新增，具体作用暂时未确定）</p>
+</blockquote>
+
+      
+    </div>
+
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/04/operation not permitted with root/"
+           data-title="operation not permitted with root" data-url="http://weeklyalgo.codes/2017/05/04/operation not permitted with root/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+    
+    2017
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>
