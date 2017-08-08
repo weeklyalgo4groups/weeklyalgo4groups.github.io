@@ -10,6 +10,7 @@ categories: v2ray
 由于v2ray给的文档有些比较复杂，所以这里简化一下步骤
 
 <!-- more -->
+> - by wkzcn
 
 
 **配置`config.json`时，记得去掉带有"//"的内容**
@@ -142,13 +143,30 @@ prerequirements：
     }
 }
 ```
-4. 启动v2ray
+
+## 如何科学上网
+1. 启动v2ray
     ```bash
     $ sudo service v2ray start
     ```
-----
+2. chrome(谷歌)浏览器设置
+   1. Proxy Switchy Omega
+      
+      [下载ProxySwitchyOmega](http://s1.alyzq.com/0ad8b71257e86f55b30dadece8fd1643/5989ad79/Page/crx/PxxxroxySxxxwitchyOmega.crx)
+   2. 安装ProxySwitchyOmega
+      >第一种方法. Tools(工具)--->Extensions(扩展)--->拖拽ProxySwitchyOmega到Extensions界面安装
+      >
+      >第二种方法. 上网搜索如何安装
+   3. 设置ProxySwitchyOmega
+      ![设置ProxySwitchyOmega](http://wx4.sinaimg.cn/mw690/7372620bgy1ficm1f2btpj211v0h6jua.jpg)
 
-这时候google一下，同时服务器tcptrack
+3. firefox(火狐浏览器)
+   >1. preferences(偏好设置)--->Advanced(高级)--->Network(网络)--->Settings(设置)--->Manual Proxy configuration(手动设置代理)--->Socks Host
+   > 2. 第一个方框填127.0.0.1, 第二个填上1080
+   > 3. 勾选proxy DNS when using socks v5
+   > 4. 保存(OK)
+- - -
+这时候浏览器google一下，同时服务器tcptrack
 
 ```bash
 $ sudo tcptrack -i eth0
