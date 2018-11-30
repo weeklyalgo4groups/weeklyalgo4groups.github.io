@@ -21,7 +21,8 @@ categories: weeklyalgo
 fork [this](https://github.com/weeklyalgo4groups/weeklyalgo4groups.github.io/)
 然后在dev branch的`source/_posts`目录添加你要添加的md格式文件。具体md文件内容格式可以参照hello-world的格式来
 整个流程跟给开源项目提pr是一样的。
-
+其中时间一定要写正确，例如`date: 2017-05-03 22:28:37`
+文章引用的图片在image下创建与当前文章同名的文件夹来管理。
 
 
 

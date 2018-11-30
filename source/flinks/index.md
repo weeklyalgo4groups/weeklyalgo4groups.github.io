@@ -17,14 +17,13 @@ footer: true
 >[k0shl](http://whereisk0shl.top)
 
 ---
->[Ch4r0n](http://www.sweetear.cn)
-
----
 >[杨君](http://blog.imjun.net)
 
 ---
->[小学生](https://null-me.github.io)
+>[小学生](http://4ch12dy.site)
 
 ---
 >[凌迟](https://hello-sherlock.github.io)
 
+---
+>[drop](https://drops.org.cn)
