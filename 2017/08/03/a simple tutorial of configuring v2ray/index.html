@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="description" content="关于v2ray科学上网的简单配置过程">
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0">
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/08/03/a simple tutorial of configuring v2ray/">
+
+
+<meta name="description" content="本教程服务器OS,客户端OS分别使用Debian 8和ubuntu 16.04 由于v2ray给的文档有些比较复杂，所以这里简化一下步骤">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于v2ray科学上网的简单配置过程">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/08/03/a simple tutorial of configuring v2ray/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="本教程服务器OS,客户端OS分别使用Debian 8和ubuntu 16.04 由于v2ray给的文档有些比较复杂，所以这里简化一下步骤">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/7372620bgy1ficm1f2btpj211v0h6jua.jpg">
+<meta property="og:updated_time" content="2019-07-01T08:06:43.169Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于v2ray科学上网的简单配置过程">
+<meta name="twitter:description" content="本教程服务器OS,客户端OS分别使用Debian 8和ubuntu 16.04 由于v2ray给的文档有些比较复杂，所以这里简化一下步骤">
+<meta name="twitter:image" content="http://wx4.sinaimg.cn/mw690/7372620bgy1ficm1f2btpj211v0h6jua.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  
+
+
+
+    <title> 关于v2ray科学上网的简单配置过程 · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          关于v2ray科学上网的简单配置过程
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年8月3日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器配置"><span class="toc-text">服务器配置</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#客户端配置"><span class="toc-text">客户端配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何科学上网"><span class="toc-text">如何科学上网</span></a>
+        </li></div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <p>本教程<strong>服务器OS</strong>,<strong>客户端OS</strong>分别使用<strong>Debian 8</strong>和<strong>ubuntu 16.04</strong></p>
+<p>由于v2ray给的文档有些比较复杂，所以这里简化一下步骤</p>
+<a id="more"></a>
+<blockquote>
+<ul>
+<li>by wkzcn</li>
+</ul>
+</blockquote>
+<p><strong>配置<code>config.json</code>时，记得去掉带有”//“的内容</strong></p>
+<p>prerequirements：</p>
+<pre><code>1. 大陆以外的vps
+
+2. ssh客户端
+
+3. sublime-text/jq/tcptrack
+
+4. [生成UUID](https://www.uuidgenerator.net/)
+
+5. 有点点地理知识(个人认为)
+</code></pre><hr>
+<h3 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h3><ol>
+<li><p>先查看vps服务器和客户端的时间是否有误差，误差要不大于一分钟。如有误差，请自行设置，这里推荐设置客户端的时间。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ date -R</span><br><span class="line">Sun, 22 Jan 2017 10:10:36 +0000</span><br></pre></td></tr></table></figure>
+<p>这个+0500是东五区，因为我们是在东8区，相差三个时区，所以转换过来的时间就是2017-01-22 13:10:36。如果客户端时间与vps时间误差大于<strong>1分钟</strong>，请设置客户端的时间为转换后的时间。</p>
+</li>
+<li><p>vps安装v2ray</p>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install curl jq tcptrack</span><br><span class="line">$ curl https://install.direct/go.sh | sudo bash</span><br><span class="line">$ sudo service v2ray status  <span class="comment"># 出现如下信息，表示v2ray安装成功</span></span><br><span class="line"><span class="comment"># ● v2ray.service - V2Ray Service</span></span><br><span class="line"><span class="comment"># Loaded: loaded (/lib/systemd/system/v2ray.service; enabled)</span></span><br><span class="line"><span class="comment">#  Active: inactive (dead)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>备份v2ray的配置文件</p>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp /etc/v2ray/config.json /etc/v2ray/config.json.bak</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成UUID</p>
+<p>  <a href="https://www.uuidgenerator.net/" target="_blank" rel="noopener">这里</a>生成UUID,并复制</p>
+</li>
+<li><p>服务器配置</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim /etc/v2ray/config.json</span><br></pre></td></tr></table></figure>
+ <figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="string">"inbound"</span>: &#123;</span><br><span class="line">     <span class="string">"port"</span>: <span class="number">16823</span>, // 服务器监听端口，更改为你喜欢的端口</span><br><span class="line">     <span class="string">"protocol"</span>: <span class="string">"vmess"</span>,    // 主传入协议，无需更改</span><br><span class="line">     <span class="string">"settings"</span>: &#123;</span><br><span class="line">       <span class="string">"clients"</span>: [</span><br><span class="line">         &#123;</span><br><span class="line">           <span class="string">"id"</span>: <span class="string">"b831381d-6324-4d53-ad4f-8cda48b30811"</span>,  // 用户 ID，客户端与服务器必须相同，填上刚才复制的uuid</span><br><span class="line">           <span class="string">"alterId"</span>: <span class="number">64</span>  // 无需更改，官方推荐<span class="number">50</span><span class="number">-100</span></span><br><span class="line">         &#125;</span><br><span class="line">       ]</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;,</span><br><span class="line">   <span class="string">"outbound"</span>: &#123;</span><br><span class="line">     <span class="string">"protocol"</span>: <span class="string">"freedom"</span>,  // 主传出协议，参见协议列表，无需更改</span><br><span class="line">     <span class="string">"settings"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查config.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo jq . /etc/v2ray/config.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动v2ray</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo service v2ray start</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h2><ol>
+<li><p>v2ray 安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://install.direct/go.sh</span><br><span class="line">$ sudo bash ./go.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>备份v2ray的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp /etc/v2ray/config.json /etc/v2ray/config.json.bak</span><br><span class="line"><span class="comment"># 如果报错,执行下面命令行</span></span><br><span class="line">$ sudo touch /etc/v2ray/config.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑config.json</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo subl /etc/v2ray/config.json</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"inbound"</span>:</span><br><span class="line">    &#123;</span><br><span class="line">        "port": 1080, // 监听端口, 无需更改</span><br><span class="line">        "protocol": "socks", // 入口协议为 SOCKS 5， 无需更改</span><br><span class="line">        "settings":</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"auth"</span>: <span class="string">"noauth"</span> // 不认证， 无需更改</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "outbound":</span><br><span class="line">    &#123;</span><br><span class="line">        "protocol": "vmess", // 出口协议， 无需更改</span><br><span class="line">        "settings":</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"vnext"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                "address": "serveraddr.com", // 服务器地址，请修改为你自己的服务器 ip 或域名</span><br><span class="line">                "port": 16823, // 服务器端口，更改为你喜欢的端口</span><br><span class="line">                "users": [</span><br><span class="line">                &#123;</span><br><span class="line">                    "id": "b831381d-6324-4d53-ad4f-8cda48b30811", // 用户 ID，必须与服务器端配置相同，填上刚才生成的UUID</span><br><span class="line">                    "alterId": 64 // 此处的值也应当与服务器相同</span><br><span class="line">                &#125;]</span><br><span class="line">            &#125;]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="如何科学上网"><a href="#如何科学上网" class="headerlink" title="如何科学上网"></a>如何科学上网</h2><ol>
+<li><p>启动v2ray</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo service v2ray start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>chrome(谷歌)浏览器设置</p>
+<ol>
+<li><p>Proxy Switchy Omega</p>
+<p><a href="http://s1.alyzq.com/0ad8b71257e86f55b30dadece8fd1643/5989ad79/Page/crx/PxxxroxySxxxwitchyOmega.crx" target="_blank" rel="noopener">下载ProxySwitchyOmega</a></p>
+</li>
+<li>安装ProxySwitchyOmega<blockquote>
+<p>第一种方法. Tools(工具)—&gt;Extensions(扩展)—&gt;拖拽ProxySwitchyOmega到Extensions界面安装</p>
+<p>第二种方法. 上网搜索如何安装</p>
+</blockquote>
+</li>
+<li>设置ProxySwitchyOmega<br><img src="http://wx4.sinaimg.cn/mw690/7372620bgy1ficm1f2btpj211v0h6jua.jpg" alt="设置ProxySwitchyOmega"></li>
+</ol>
+</li>
+<li><p>firefox(火狐浏览器)</p>
+<blockquote>
+<ol>
+<li>preferences(偏好设置)—&gt;Advanced(高级)—&gt;Network(网络)—&gt;Settings(设置)—&gt;Manual Proxy configuration(手动设置代理)—&gt;Socks Host</li>
+<li>第一个方框填127.0.0.1, 第二个填上1080</li>
+<li>勾选proxy DNS when using socks v5</li>
+<li>保存(OK)</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<hr>
+<p>这时候浏览器google一下，同时服务器tcptrack</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo tcptrack -i eth0</span><br><span class="line"><span class="comment"># 这里看一下server和State(ESTABLISHED代表已经建立客户端和服务器端的连接)</span></span><br><span class="line"><span class="comment"># Enjoy it！！！</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/08/03/a simple tutorial of configuring v2ray/" data-title="关于v2ray科学上网的简单配置过程" data-url="http://weeklyalgo.codes/2017/08/03/a simple tutorial of configuring v2ray/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>

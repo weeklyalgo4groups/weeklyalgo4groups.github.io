@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="description" content="Complie 32bits assembly on Ubuntu 64bits">
+
+
+
+
+  <meta name="keywords" content="ubuntu,">
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0">
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2018/11/30/ubuntu-bits-complie-bits-assembly/">
+
+
+<meta name="description" content="by jay   64位Ubuntu系统编译32位汇编汇编链接生成可执行文件ld -o eatsyscall eatsycscall.o 输出ld:i386 architecture of input file eatsyscall.o&amp;#39; is incompatible with i386:x86-64 ouput 解决经过搜索64位下ld提供了一个选项-m emulation，简写">
+<meta name="keywords" content="ubuntu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Complie 32bits assembly on Ubuntu 64bits">
+<meta property="og:url" content="http://weeklyalgo.codes/2018/11/30/ubuntu-bits-complie-bits-assembly/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="by jay   64位Ubuntu系统编译32位汇编汇编链接生成可执行文件ld -o eatsyscall eatsycscall.o 输出ld:i386 architecture of input file eatsyscall.o&amp;#39; is incompatible with i386:x86-64 ouput 解决经过搜索64位下ld提供了一个选项-m emulation，简写">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-01T08:06:43.169Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Complie 32bits assembly on Ubuntu 64bits">
+<meta name="twitter:description" content="by jay   64位Ubuntu系统编译32位汇编汇编链接生成可执行文件ld -o eatsyscall eatsycscall.o 输出ld:i386 architecture of input file eatsyscall.o&amp;#39; is incompatible with i386:x86-64 ouput 解决经过搜索64位下ld提供了一个选项-m emulation，简写">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  
+
+
+
+    <title> Complie 32bits assembly on Ubuntu 64bits · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Complie 32bits assembly on Ubuntu 64bits
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年11月30日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#64位Ubuntu系统编译32位汇编"><span class="toc-text">64位Ubuntu系统编译32位汇编</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#汇编链接生成可执行文件"><span class="toc-text">汇编链接生成可执行文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出"><span class="toc-text">输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决"><span class="toc-text">解决</span></a></li></ol></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <a id="more"></a>
+<blockquote>
+<ul>
+<li>by jay</li>
+</ul>
+</blockquote>
+<h2 id="64位Ubuntu系统编译32位汇编"><a href="#64位Ubuntu系统编译32位汇编" class="headerlink" title="64位Ubuntu系统编译32位汇编"></a>64位Ubuntu系统编译32位汇编</h2><h3 id="汇编链接生成可执行文件"><a href="#汇编链接生成可执行文件" class="headerlink" title="汇编链接生成可执行文件"></a>汇编链接生成可执行文件</h3><pre><code>ld -o eatsyscall eatsycscall.o
+</code></pre><h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p><em>ld:i386 architecture of input file <code>eatsyscall.o&#39; is incompatible with
+i386:x86-64 ouput</code></em></p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>经过搜索64位下ld提供了一个选项-m emulation，简写-m。说明文档如下：</p>
+<pre><code>-m emulation
+       Emulate the emulation linker. You can list the available
+       emulations with the --verbose or -V options.
+
+       If the -m option is not used，the emulation is taken from the
+       &quot;LDEMULSYION&quot; environment variable，if that is defined.
+
+       Otherwise，the default emulation depends upon how the linker was
+       configured.
+</code></pre><p>即，这个选项可以模拟其他平台上的ld链接器。使用-m elf_i386可以模拟32位平台上<br>ld指令。</p>
+
+      
+    </div>
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/ubuntu/">ubuntu</a>
+          
+        </div>
+
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/07/01/hello-world/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Hello Weeklyalgo</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/08/03/a simple tutorial of configuring v2ray/">
+        <span class="next-text nav-default">关于v2ray科学上网的简单配置过程</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2018/11/30/ubuntu-bits-complie-bits-assembly/" data-title="Complie 32bits assembly on Ubuntu 64bits" data-url="http://weeklyalgo.codes/2018/11/30/ubuntu-bits-complie-bits-assembly/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>

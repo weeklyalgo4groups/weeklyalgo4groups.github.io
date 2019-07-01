@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="description" content="Binary Format">
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WeeklyAlgo">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.1.0">
+
+
+
+<link rel="canonical" href="http://weeklyalgo.codes/2017/05/03/Binary Format/">
+
+
+<meta name="description" content="MacOS/iOS上的可执行二进制文件格式记录下学习过程描述了MachO/Universal Binaries/Scripts Image这三种文件格式后续再写可执行文件加载的流程   by hook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binary Format">
+<meta property="og:url" content="http://weeklyalgo.codes/2017/05/03/Binary Format/index.html">
+<meta property="og:site_name" content="WeeklyAlgo">
+<meta property="og:description" content="MacOS/iOS上的可执行二进制文件格式记录下学习过程描述了MachO/Universal Binaries/Scripts Image这三种文件格式后续再写可执行文件加载的流程   by hook">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://weeklyalgo.codes/images/MachOFormat/format0.png">
+<meta property="og:image" content="http://weeklyalgo.codes/images/MachOFormat/format1.png">
+<meta property="og:updated_time" content="2019-07-01T08:06:43.169Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Binary Format">
+<meta name="twitter:description" content="MacOS/iOS上的可执行二进制文件格式记录下学习过程描述了MachO/Universal Binaries/Scripts Image这三种文件格式后续再写可执行文件加载的流程   by hook">
+<meta name="twitter:image" content="http://weeklyalgo.codes/images/MachOFormat/format0.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.1.0">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  
+
+
+
+    <title> Binary Format · WeeklyAlgo </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">WeeklyAlgo</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item">
+          <a class="menu-item-link" href="/flinks">
+            友链
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">WeeklyAlgo</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      
+      <a class="mobile-menu-item" href="/">
+        首页
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/archives/">
+        归档
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/categories">
+        分类
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/about">
+        关于
+      </a>
+    
+      
+      <a class="mobile-menu-item" href="/flinks">
+        友链
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Binary Format
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年5月3日
+        </span>
+      </div>
+    </header>
+
+    
+      <div class="post-toc" id="post-toc">
+        <h2 class="post-toc-title">文章目录</h2>
+        <div class="post-toc-content">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MacOS-iOS上的可执行二进制文件格式"><span class="toc-text">MacOS/iOS上的可执行二进制文件格式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MachO文件格式"><span class="toc-text">MachO文件格式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结构总览"><span class="toc-text">结构总览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-MachO-Header"><span class="toc-text">1. MachO Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Load-Commands"><span class="toc-text">2. Load Commands</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LC-SEGMENT"><span class="toc-text">. LC_SEGMENT</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SECTION"><span class="toc-text">SECTION</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LC-LOAD-DYLINER"><span class="toc-text">. LC_LOAD_DYLINER</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LC-CODE-SIGNATURE"><span class="toc-text">. LC_CODE_SIGNATURE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LC-MAIN"><span class="toc-text">. LC_MAIN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lt-…-gt-其他命令就暂不作记录了"><span class="toc-text">&lt;…&gt;. 其他命令就暂不作记录了</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-DATA区"><span class="toc-text">3. DATA区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-TEXT"><span class="toc-text">. Section(__TEXT)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-DATA"><span class="toc-text">. Section(__DATA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Symbol-Table-Info"><span class="toc-text">. Symbol Table Info</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamic-Symbol-Table-Info"><span class="toc-text">. Dynamic Symbol Table Info</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamic-Loader-Info"><span class="toc-text">. Dynamic Loader Info</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String-Table"><span class="toc-text">. String Table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Signature"><span class="toc-text">. Code Signature</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Universal-Binaries-Fat-File"><span class="toc-text">Universal Binaries(Fat File)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结构总览-1"><span class="toc-text">结构总览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fat-Header"><span class="toc-text">Fat Header:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MachO-File-1"><span class="toc-text">MachO File 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MachO-File-2"><span class="toc-text">MachO File 2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MachO-File-n"><span class="toc-text">MachO File n</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Scripts-Image"><span class="toc-text">Scripts Image</span></a></li></ol>
+        </div>
+      </div>
+    
+
+    <div class="post-content">
+      
+        <h1 id="MacOS-iOS上的可执行二进制文件格式"><a href="#MacOS-iOS上的可执行二进制文件格式" class="headerlink" title="MacOS/iOS上的可执行二进制文件格式"></a>MacOS/iOS上的可执行二进制文件格式</h1><p>记录下学习过程<br>描述了MachO/Universal Binaries/Scripts Image这三种文件格式<br>后续再写可执行文件加载的流程</p>
+<blockquote>
+<ul>
+<li>by hook</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h1 id="MachO文件格式"><a href="#MachO文件格式" class="headerlink" title="MachO文件格式"></a>MachO文件格式</h1><h2 id="结构总览"><a href="#结构总览" class="headerlink" title="结构总览"></a>结构总览</h2><p>官方结构图示:<br><img src="/images/MachOFormat/format0.png" alt></p>
+<h2 id="1-MachO-Header"><a href="#1-MachO-Header" class="headerlink" title="1. MachO Header"></a>1. MachO Header</h2><p>先是头部</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mach_header</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> magic; <span class="comment">/* mach magic number identifier */</span></span><br><span class="line">    <span class="keyword">cpu_type_t</span> cputype; <span class="comment">/* cpu specifier */</span></span><br><span class="line">    <span class="keyword">cpu_subtype_t</span> cpusubtype; <span class="comment">/* machine specifier */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> filetype; <span class="comment">/* type of file */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> ncmds; <span class="comment">/* number of load commands */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> sizeofcmds; <span class="comment">/* the size of all the load commands */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> flags; <span class="comment">/* flags */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> reserved; <span class="comment">/* 仅限64位MachO，预留字段，默认0 */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/* Constant for the magic field of the mach_header (32-bit architectures) */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MH_MAGIC 0xfeedface <span class="comment">/* the mach magic number */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MH_CIGAM 0xcefaedfe <span class="comment">/* NXSwapInt(MH_MAGIC) */</span></span></span><br></pre></td></tr></table></figure>
+<p>这里列出了32位MachO头(64位为mach_header_64, 多了一个预留字段uint32_t reserved;<code>目前未使用</code>)</p>
+<p>mach_header:</p>
+<blockquote>
+<p>1.magic(armv7_armv7s_0xfeedface, arm64_0xfeedfacf)<br>2.cputype(armv7_armv7s_0x0000000c, arm64_0x0100000c)<br>3.cpusubtype(armv7_0x00000009, armv7s_0x0000000b,…)<br>4.filetype:</p>
+<blockquote>
+<p>字段值在\&lt;mach-o/loader.h&gt;文件中可以看到</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>文件类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MH_OBJECT</td>
+<td>可重定位的目标文件</td>
+</tr>
+<tr>
+<td>MH_EXECUTABLE</td>
+<td>可执行二进制文件</td>
+</tr>
+<tr>
+<td>MH_DYLIB</td>
+<td>动态库</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<blockquote>
+<p>5.加载器加载命令的数量<br>6.加载器加载命令的大小<br>7.flags二进制属性标示</p>
+<blockquote>
+<p>同样位于\&lt;mach-o/loader.h&gt;文件中</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MH_TWOLEVEL</td>
+<td>两层名称绑定</td>
+</tr>
+<tr>
+<td>MH_ALLOW_STACK_EXECUTION</td>
+<td>允许栈执行</td>
+</tr>
+<tr>
+<td>MH_PIE</td>
+<td>启用地址空间布局随机化</td>
+</tr>
+<tr>
+<td>MH_NO_HEAP_EXECUTION</td>
+<td>标记堆不可执行，防止”堆喷(heap spray)”攻击</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<hr>
+<h2 id="2-Load-Commands"><a href="#2-Load-Commands" class="headerlink" title="2. Load Commands"></a>2. Load Commands</h2><p>通用主体结构在下面列出，但详细的LC存在不同的结构:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">load_command</span> &#123;</span></span><br><span class="line">true<span class="keyword">uint32_t</span> cmd;		<span class="comment">/* type of load command */</span></span><br><span class="line">true<span class="keyword">uint32_t</span> cmdsize;	<span class="comment">/* total size of command in bytes */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>load_command:</p>
+<blockquote>
+<ol>
+<li>32位的cmd值描述命令类型，命令在\&lt;mach-o/loader.h&gt;文件中可以看到</li>
+<li>cmdsize描述命令本身长度(32位为4的倍数, 64位为8的倍数)</li>
+</ol>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Constants for the cmd field of all load commands, the type */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_SEGMENT	0x1	<span class="comment">/* segment of this file to be mapped */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_SYMTAB	0x2	<span class="comment">/* link-edit stab symbol table info */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_SYMSEG	0x3	<span class="comment">/* link-edit gdb symbol table info (obsolete) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_THREAD	0x4	<span class="comment">/* thread */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_UNIXTHREAD	0x5	<span class="comment">/* unix thread (includes a stack) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_LOADFVMLIB	0x6	<span class="comment">/* load a specified fixed VM shared library */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_IDFVMLIB	0x7	<span class="comment">/* fixed VM shared library identification */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_IDENT	0x8	<span class="comment">/* object identification info (obsolete) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_FVMFILE	0x9	<span class="comment">/* fixed VM file inclusion (internal use) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_PREPAGE      0xa     <span class="comment">/* prepage command (internal use) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_DYSYMTAB	0xb	<span class="comment">/* dynamic link-edit symbol table info */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_LOAD_DYLIB	0xc	<span class="comment">/* load a dynamically linked shared library */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_ID_DYLIB	0xd	<span class="comment">/* dynamically linked shared lib ident */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_LOAD_DYLINKER 0xe	<span class="comment">/* load a dynamic linker */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_ID_DYLINKER	0xf	<span class="comment">/* dynamic linker identification */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	LC_PREBOUND_DYLIB 0x10	<span class="comment">/* modules prebound for a dynamically */</span></span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_CODE_SIGNATURE 0x1d	<span class="comment">/* local of code signature */</span></span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_LINKER_OPTIMIZATION_HINT 0x2E <span class="comment">/* optimization hints in MH_OBJECT files */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __OPEN_SOURCE__</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_VERSION_MIN_TVOS 0x2F <span class="comment">/* build for AppleTV min OS version */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* __OPEN_SOURCE__ */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LC_VERSION_MIN_WATCHOS 0x30 <span class="comment">/* build for Watch min OS version */</span></span></span><br></pre></td></tr></table></figure>
+<p>加载的命令大概有30多条，加载过程在内核部分负责新进程的基本设置，分配虚拟内存，创建主线程，处理代码签名，加密等工作。<br>对于包含了动态链接的文件，主要的库加载文件和符号解析工作是通过LC_LOAD_DYLINER命令指定的动态链接器(/usr/lib/dyld)在用户态完成的，控制权转交给链接器，进而处理文件头中的其他加载命令。</p>
+<p>接着详细说明一些Load Commands段中的组成：</p>
+<h3 id="LC-SEGMENT"><a href="#LC-SEGMENT" class="headerlink" title=". LC_SEGMENT"></a><1>. LC_SEGMENT</1></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">segment_command</span> &#123;</span> <span class="comment">/* for 32-bit architectures */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	cmd;		<span class="comment">/* LC_SEGMENT */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	cmdsize;	<span class="comment">/* includes sizeof section structs */</span></span><br><span class="line">true<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment name */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	vmaddr;		<span class="comment">/* memory address of this segment */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	vmsize;		<span class="comment">/* memory size of this segment */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	fileoff;	<span class="comment">/* file offset of this segment */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	filesize;	<span class="comment">/* amount to map from the file */</span></span><br><span class="line">true<span class="keyword">vm_prot_t</span>	maxprot;	<span class="comment">/* maximum VM protection */</span></span><br><span class="line">true<span class="keyword">vm_prot_t</span>	initprot;	<span class="comment">/* initial VM protection */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	nsects;		<span class="comment">/* number of sections in segment */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* flags */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>64位的LC_SEGMENT结构定义和32位类似，但在vmaddr等虚拟内存大小，地址还有segment大小和相对文件偏移方面采用了uint64_t长度。</p>
+<blockquote>
+<p>maxprot: 段页面的最高内存保护<br>initprot: 初始内存保护<br>nsects: 其中包含的section数量<br>flag: 段页面标志(比如0x08,加密的段)</p>
+</blockquote>
+<p>LC_SEGMENT命令将fileoff偏移处的filesize大小内容加载到大小为vmsize的虚拟内存地址vmaddr处。<br>段页面权限由<code>initprot</code>进行初始化，而且段的权限可以动态改变,但不能超过<code>maxprot</code>的值。(iOS中段权限不允许x和w同时存在)</p>
+<p>至于段的<code>flag</code>标志可以用以下几种，例如<code>SG_PROTECTED_VERSTION_1</code>标记该段受保护，苹果通过该技术加密二进制文件(AppStore中的应用就被加密了，但仍旧被insert_dylib dump出解密后文件)</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define	SG_HIGHVM	0x1	/* the file contents for this segment is for</span></span><br><span class="line">truetruetruetrue   <span class="keyword">the</span> high part <span class="keyword">of</span> <span class="keyword">the</span> VM <span class="literal">space</span>, <span class="keyword">the</span> low part</span><br><span class="line">truetruetruetrue   is <span class="literal">zero</span> filled (<span class="keyword">for</span> stacks <span class="keyword">in</span> core <span class="built_in">files</span>) */</span><br><span class="line"><span class="comment">#define	SG_FVMLIB	0x2	/* this segment is the VM that is allocated by</span></span><br><span class="line">truetruetruetrue   <span class="keyword">a</span> fixed VM library, <span class="keyword">for</span> overlap checking <span class="keyword">in</span></span><br><span class="line">truetruetruetrue   <span class="keyword">the</span> link editor */</span><br><span class="line"><span class="comment">#define	SG_NORELOC	0x4	/* this segment has nothing that was relocated</span></span><br><span class="line">truetruetruetrue   <span class="keyword">in</span> <span class="keyword">it</span> <span class="keyword">and</span> nothing relocated <span class="built_in">to</span> <span class="keyword">it</span>, that is</span><br><span class="line">truetruetruetrue   <span class="keyword">it</span> maybe safely replaced <span class="keyword">without</span> relocation*/</span><br><span class="line"><span class="comment">#define SG_PROTECTED_VERSION_1	0x8 /* This segment is protected.  If the</span></span><br><span class="line">truetruetruetrue       <span class="keyword">segment</span> starts <span class="keyword">at</span> <span class="built_in">file</span> <span class="built_in">offset</span> <span class="number">0</span>, <span class="keyword">the</span></span><br><span class="line">truetruetruetrue       <span class="keyword">first</span> page <span class="keyword">of</span> <span class="keyword">the</span> <span class="keyword">segment</span> is <span class="keyword">not</span></span><br><span class="line">truetruetruetrue       protected.  All other pages <span class="keyword">of</span> <span class="keyword">the</span></span><br><span class="line">truetruetruetrue       <span class="keyword">segment</span> are protected. */</span><br></pre></td></tr></table></figure>
+<h4 id="SECTION"><a href="#SECTION" class="headerlink" title="SECTION"></a>SECTION</h4><p>一个段(Segment)是由 0 到 n 个区(section)组成的:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">section</span> &#123;</span> <span class="comment">/* for 32-bit architectures */</span></span><br><span class="line">true<span class="keyword">char</span>		sectname[<span class="number">16</span>];	<span class="comment">/* name of this section */</span></span><br><span class="line">true<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment this section goes in */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	addr;		<span class="comment">/* memory address of this section */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	size;		<span class="comment">/* size in bytes of this section */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	offset;		<span class="comment">/* file offset of this section */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	align;		<span class="comment">/* section alignment (power of 2) */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	reloff;		<span class="comment">/* file offset of relocation entries */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	nreloc;		<span class="comment">/* number of relocation entries */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* flags (section type and attributes)*/</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	reserved1;	<span class="comment">/* reserved (for offset or index) */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	reserved2;	<span class="comment">/* reserved (for count or sizeof) */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>64位的section结构和32位相同，但memory addr&amp;size为<code>uint64_t</code>长度，并且增加了个预留字段<code>uint32_t reserved3</code>;</p>
+<blockquote>
+<ol>
+<li>sectname: 当前区的名字</li>
+<li>segname: 对应后面真实Section段的名字</li>
+<li>addr: 这个区在虚拟内存中的地址</li>
+<li>size: 这个区在虚拟内存中将占据的大小</li>
+<li>offset: 该区相对文件的偏移</li>
+<li>align: 该区的字节对齐大小n，最后计算结果为2^n</li>
+<li>reloff: 该区的第一个重定位入口对应文件的偏移</li>
+<li>nreloc: 该区包含的重定位入口数量</li>
+<li>flag: 该标志包含两个信息，(<code>section的类型</code> 和 <code>section的属性</code>)</li>
+</ol>
+<blockquote>
+<p><code>0x000000ff</code>最后2位定义section type<br><code>0xffffff00</code>前面6位定义section attributes</p>
+</blockquote>
+</blockquote>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">section <span class="built_in">type</span>:</span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	S_REGULAR		0x0	<span class="comment">/* regular section */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	S_ZEROFILL		0x1	<span class="comment">/* zero fill on demand section */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	S_CSTRING_LITERALS	0x2	<span class="comment">/* section with only literal C strings*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	S_SYMBOL_STUBS	0x8	<span class="comment">/* section with only symbol</span></span></span><br><span class="line"><span class="meta"><span class="comment">						   stubs, byte size of stub in</span></span></span><br><span class="line"><span class="meta"><span class="comment">						   the reserved2 field */</span></span></span><br><span class="line">...</span><br><span class="line">section attributes:</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> S_ATTR_PURE_INSTRUCTIONS 0x80000000	<span class="comment">/* section contains only true</span></span></span><br><span class="line"><span class="meta"><span class="comment">						   machine instructions */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> S_ATTR_SOME_INSTRUCTIONS 0x00000400	<span class="comment">/* section contains some</span></span></span><br><span class="line"><span class="meta"><span class="comment">						   machine instructions */</span></span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>而这些不同的flag标志构成了不同的section:</p>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>__text</td>
+<td>主程序代码</td>
+</tr>
+<tr>
+<td><strong>stubs, </strong>stub_helper</td>
+<td>用于动态链接的stub</td>
+</tr>
+<tr>
+<td>__cstring</td>
+<td>程序中硬编码的字符串</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>__TEXT.__obj_method</td>
+<td>OC方法名</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>__DATA.__bss</td>
+<td>BSS</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">`S_ATTR_PURE_INSTRUCTIONS`: This section contains only executable machine instructions. The standard tools <span class="keyword">set</span> this flag <span class="keyword">for</span> the sections __TEXT,__text, __TEXT,__symbol_stub, <span class="keyword">and</span> __TEXT,__picsymbol_stub.</span><br><span class="line"><span class="string">`S_ATTR_SOME_INSTRUCTIONS`</span>: This <span class="keyword">section</span> contains executable machine instructions.</span><br><span class="line">...</span><br><span class="line"><span class="string">`S_REGULAR`</span>: This <span class="keyword">section</span> has <span class="keyword">no</span> particular type. The standard tools <span class="keyword">create</span> a __TEXT,__text <span class="keyword">section</span> <span class="keyword">of</span> this type.</span><br><span class="line"><span class="string">`S_ZEROFILL`</span>: Zero-fill-<span class="keyword">on</span>-<span class="keyword">demand</span> <span class="keyword">section</span>—<span class="keyword">when</span> this <span class="keyword">section</span> <span class="keyword">is</span> <span class="keyword">first</span> <span class="keyword">read</span> <span class="keyword">from</span> <span class="keyword">or</span> written <span class="keyword">to</span>, <span class="keyword">each</span> page <span class="keyword">within</span> <span class="keyword">is</span> automatically filled <span class="keyword">with</span> <span class="keyword">bytes</span> containing zero. __DATA.__bss</span><br><span class="line"><span class="string">`S_CSTRING_LITERALS`</span>: This <span class="keyword">section</span> contains <span class="keyword">only</span> <span class="keyword">constant</span> C strings. The standard tools <span class="keyword">create</span> a __TEXT,__cstring <span class="keyword">section</span> <span class="keyword">of</span> this type.</span><br></pre></td></tr></table></figure>
+<h3 id="LC-LOAD-DYLINER"><a href="#LC-LOAD-DYLINER" class="headerlink" title=". LC_LOAD_DYLINER"></a><2>. LC_LOAD_DYLINER</2></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dylib_command</span> &#123;</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	cmd;		<span class="comment">/* LC_ID_DYLIB, LC_LOAD_&#123;,WEAK_&#125;DYLIB,</span></span><br><span class="line"><span class="comment">					   LC_REEXPORT_DYLIB */</span></span><br><span class="line">true<span class="keyword">uint32_t</span>	cmdsize;	<span class="comment">/* includes pathname string */</span></span><br><span class="line">true<span class="class"><span class="keyword">struct</span> <span class="title">dylib</span>	<span class="title">dylib</span>;</span>		<span class="comment">/* the library identification */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dylib</span> &#123;</span></span><br><span class="line">    <span class="keyword">union</span> lc_str  name;			<span class="comment">/* library's path name */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> timestamp;			<span class="comment">/* library's build time stamp */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> current_version;		<span class="comment">/* library's current version number */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> compatibility_version;	<span class="comment">/* library's compatibility vers number*/</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> lc_str &#123;</span><br><span class="line">true<span class="keyword">uint32_t</span>	offset;	<span class="comment">/* offset to the string */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __LP64__</span></span><br><span class="line">true<span class="keyword">char</span>		*ptr;	<span class="comment">/* pointer to the string */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>dyld加载命令</p>
+<h3 id="LC-CODE-SIGNATURE"><a href="#LC-CODE-SIGNATURE" class="headerlink" title=". LC_CODE_SIGNATURE"></a><3>. LC_CODE_SIGNATURE</3></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">linkedit_data_command</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span>	cmd;		<span class="comment">/* LC_CODE_SIGNATURE, LC_SEGMENT_SPLIT_INFO,</span></span><br><span class="line"><span class="comment">                                   LC_FUNCTION_STARTS, LC_DATA_IN_CODE,</span></span><br><span class="line"><span class="comment">				   LC_DYLIB_CODE_SIGN_DRS or</span></span><br><span class="line"><span class="comment">				   LC_LINKER_OPTIMIZATION_HINT. */</span></span><br><span class="line">    <span class="keyword">uint32_t</span>	cmdsize;	<span class="comment">/* sizeof(struct linkedit_data_command) */</span></span><br><span class="line">    <span class="keyword">uint32_t</span>	dataoff;	<span class="comment">/* file offset of data in __LINKEDIT segment */</span></span><br><span class="line">    <span class="keyword">uint32_t</span>	datasize;	<span class="comment">/* file size of data in __LINKEDIT segment  */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>代码签名，这个命令记录了该MachO二进制文件代码签名的分布信息，如果代码签名与二进制不符合，或者在iOS上检测machO文件没有该命令时，内核会向进程发送SIGKILL信号，杀死进程。</p>
+<h3 id="LC-MAIN"><a href="#LC-MAIN" class="headerlink" title=". LC_MAIN"></a><4>. LC_MAIN</4></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">entry_point_command</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span>  cmd;	<span class="comment">/* LC_MAIN only used in MH_EXECUTE filetypes */</span></span><br><span class="line">    <span class="keyword">uint32_t</span>  cmdsize;	<span class="comment">/* 24 */</span></span><br><span class="line">    <span class="keyword">uint64_t</span>  entryoff;	<span class="comment">/* file (__TEXT) offset of main() */</span></span><br><span class="line">    <span class="keyword">uint64_t</span>  stacksize;<span class="comment">/* if not zero, initial stack size */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>该命令记录主线程的入口信息，从Lion版本时抛弃了LC_UNIXTHREAD命令改为LC_MAIN,但同时意味着不能在旧版本上运行使用LC_MAIN命令入口的程序</p>
+<h3 id="lt-…-gt-其他命令就暂不作记录了"><a href="#lt-…-gt-其他命令就暂不作记录了" class="headerlink" title="&lt;…&gt;. 其他命令就暂不作记录了"></a>&lt;…&gt;. 其他命令就暂不作记录了</h3><hr>
+<h2 id="3-DATA区"><a href="#3-DATA区" class="headerlink" title="3. DATA区"></a>3. DATA区</h2><p>接着就是MachO的主体，Section Data, 上文LC命令中包含了section command的信息指向了这里</p>
+<h3 id="Section-TEXT"><a href="#Section-TEXT" class="headerlink" title=". Section(__TEXT)"></a><1>. Section(__TEXT)</1></h3><p>这里一般情况下存储一些主程序代码，动态链接的stub和helper代码,还有一些硬编码和plist信息</p>
+<h3 id="Section-DATA"><a href="#Section-DATA" class="headerlink" title=". Section(__DATA)"></a><2>. Section(__DATA)</2></h3><p>这里存放一些OC原型和镜像信息，还有symbol bind信息,bss等</p>
+<h3 id="Symbol-Table-Info"><a href="#Symbol-Table-Info" class="headerlink" title=". Symbol Table Info"></a><3>. Symbol Table Info</3></h3><h3 id="Dynamic-Symbol-Table-Info"><a href="#Dynamic-Symbol-Table-Info" class="headerlink" title=". Dynamic Symbol Table Info"></a><4>. Dynamic Symbol Table Info</4></h3><h3 id="Dynamic-Loader-Info"><a href="#Dynamic-Loader-Info" class="headerlink" title=". Dynamic Loader Info"></a><5>. Dynamic Loader Info</5></h3><h3 id="String-Table"><a href="#String-Table" class="headerlink" title=". String Table"></a><6>. String Table</6></h3><h3 id="Code-Signature"><a href="#Code-Signature" class="headerlink" title=". Code Signature"></a><7>. Code Signature</7></h3><p>等等信息，因为这里数据可变，所以就不做详细记录了</p>
+<hr>
+<hr>
+<hr>
+<h1 id="Universal-Binaries-Fat-File"><a href="#Universal-Binaries-Fat-File" class="headerlink" title="Universal Binaries(Fat File)"></a>Universal Binaries(Fat File)</h1><h2 id="结构总览-1"><a href="#结构总览-1" class="headerlink" title="结构总览"></a>结构总览</h2><p>结构实例:<br><img src="/images/MachOFormat/format1.png" alt></p>
+<h2 id="Fat-Header"><a href="#Fat-Header" class="headerlink" title="Fat Header:"></a>Fat Header:</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FAT_MAGIC 0xcafebabe</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FAT_CIGAM 0xbebafeca <span class="comment">/* NXSwapLong(FAT_MAGIC) */</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fat_header</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> magic;</span><br><span class="line">    <span class="keyword">uint32_t</span> nfat_arch;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fat_arch</span> &#123;</span></span><br><span class="line">    <span class="keyword">cpu_type_t</span> cputype; <span class="comment">/* cpu specifier (int) */</span></span><br><span class="line">    <span class="keyword">cpu_subtype_t</span> cpusubtype; <span class="comment">/* machine specifier (int) */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> offset; <span class="comment">/* file offset to this object file */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> size; <span class="comment">/* size of this object file */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> align; <span class="comment">/* alignment as a power of 2 */</span></span><br><span class="line"> &#125;;</span><br></pre></td></tr></table></figure>
+<p>fat_header:</p>
+<blockquote>
+<p>1.magic描述文件类型, 例如<code>Fat File[0xcafebabe]</code><br>2.nfat_arch描述当前的FatFile包含多少架构的MachO文件</p>
+</blockquote>
+<p>fat_arch：紧跟在fat_header后，用来描述后续的MachO信息</p>
+<blockquote>
+<p>…<br>3.offset对应MachO相对于此文件的偏移<br>4.size对应MachO大小<br>5.align对齐页边界(4k),表示为2的n次幂(即12)</p>
+</blockquote>
+<hr>
+<p>接下来就是nfat_arch个与之对应的MachO文件</p>
+<h2 id="MachO-File-1"><a href="#MachO-File-1" class="headerlink" title="MachO File 1"></a>MachO File 1</h2><h2 id="MachO-File-2"><a href="#MachO-File-2" class="headerlink" title="MachO File 2"></a>MachO File 2</h2><p>…<br>…<br>…</p>
+<h2 id="MachO-File-n"><a href="#MachO-File-n" class="headerlink" title="MachO File n"></a>MachO File n</h2><hr>
+<h1 id="Scripts-Image"><a href="#Scripts-Image" class="headerlink" title="Scripts Image"></a>Scripts Image</h1><p>可执行的脚本文件，这个本不应该出现在这篇binary format介绍里，我一直以为脚本文件由sh等类似的shell去解析。<br>但在翻内核源码时，看到imgact的启动时将MachO/Fat File/Scripts三种文件都当作image文件去加载，只是最后使用了不同的image activator去解析。</p>
+<p>这里把script仍旧分解成image去image activator。</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (vdata[<span class="number">0</span>] != <span class="string">'#'</span> ||</span><br><span class="line">true    vdata[<span class="number">1</span>] != <span class="string">'!'</span> ||</span><br><span class="line">true    (<span class="function"><span class="title">imgp</span>-&gt;</span>ip_flags &amp; IMGPF_INTERPRET) != <span class="number">0</span>) &#123;</span><br><span class="line">truetruereturn (-<span class="number">1</span>);</span><br><span class="line">true&#125;</span><br><span class="line"></span><br><span class="line">true<span class="function"><span class="title">if</span> (imgp-&gt;</span>ip_origcputype != <span class="number">0</span>) &#123;</span><br><span class="line">truetrue<span class="comment">/* Fat header previously matched, don't allow shell script inside */</span></span><br><span class="line">truetruereturn (-<span class="number">1</span>);</span><br><span class="line">true&#125;</span><br><span class="line"></span><br><span class="line">true<span class="function"><span class="title">imgp</span>-&gt;</span>ip_flags |= IMGPF_INTERPRET;</span><br><span class="line">true<span class="function"><span class="title">imgp</span>-&gt;</span>ip_interp_sugid_fd = -<span class="number">1</span>;</span><br><span class="line">true<span class="function"><span class="title">imgp</span>-&gt;</span>ip_interp_buffer[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">true<span class="comment">/* Check to see if SUGID scripts are permitted.  If they aren't then</span></span><br><span class="line"><span class="comment">	 * clear the SUGID bits.</span></span><br><span class="line"><span class="comment">	 * imgp-&gt;ip_vattr is known to be valid.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">true<span class="keyword">if</span> (sugid_scripts == <span class="number">0</span>) &#123;</span><br><span class="line">truetrue<span class="function"><span class="title">imgp</span>-&gt;</span><span class="function"><span class="title">ip_origvattr</span>-&gt;</span>va_mode &amp;= ~(VSUID | VSGID);</span><br><span class="line">true&#125;</span><br><span class="line"></span><br><span class="line">true<span class="comment">/* Try to find the first non-whitespace character */</span></span><br><span class="line">true<span class="keyword">for</span>( ihp = &amp;vdata[<span class="number">2</span>]; ihp &lt; &amp;vdata[IMG_SHSIZE]; ihp++ ) &#123;</span><br><span class="line">truetrue<span class="keyword">if</span> (IS_EOL(*ihp)) &#123;</span><br><span class="line">truetruetrue<span class="comment">/* Did not find interpreter, "#!\n" */</span></span><br><span class="line">truetruetruereturn (ENOEXEC);</span><br><span class="line">truetrue&#125; <span class="keyword">else</span> <span class="keyword">if</span> (IS_WHITESPACE(*ihp)) &#123;</span><br><span class="line">truetruetrue<span class="comment">/* Whitespace, like "#!    /bin/sh\n", keep going. */</span></span><br><span class="line">truetrue&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">truetruetrue<span class="comment">/* Found start of interpreter */</span></span><br><span class="line">truetruetruebreak;</span><br><span class="line">truetrue&#125;</span><br><span class="line">true&#125;</span><br><span class="line">true...</span><br><span class="line">true<span class="comment">/* The character after the last non-whitespace is our logical end of line */</span></span><br><span class="line">trueline_endp = ihp + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">true<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * Now we have pointers to the usable part of:</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * "#!  /usr/bin/int first    second   third    \n"</span></span><br><span class="line"><span class="comment">	 *      ^ line_startp                       ^ line_endp</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line"></span><br><span class="line">true<span class="comment">/* copy the interpreter name */</span></span><br><span class="line">true<span class="function"><span class="title">interp</span> = imgp-&gt;</span>ip_interp_buffer;</span><br><span class="line">true<span class="keyword">for</span> ( ihp = line_startp; (ihp &lt; line_endp) &amp;&amp; !IS_WHITESPACE(*ihp); ihp++)</span><br><span class="line">truetrue*interp++ = *ihp;</span><br><span class="line">true*interp = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">trueexec_reset_save_path(imgp);</span><br><span class="line">true<span class="function"><span class="title">exec_save_path</span>(imgp, CAST_USER_ADDR_T(imgp-&gt;</span>ip_interp_buffer), UIO_SYSSPACE, NULL);</span><br><span class="line">。..</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/03/Binary Format/" data-title="Binary Format" data-url="http://weeklyalgo.codes/2017/05/03/Binary Format/">
+      </div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+  <div class="social-links">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/weeklyalgo4groups" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="author">weeklyalgo.codes</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"weeklyalgo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.1.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.1.0"></script>
+
+  </body>
+</html>
